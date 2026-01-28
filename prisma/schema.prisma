@@ -8,9 +8,16 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  hotels   Hotel[]
-  bookings Booking[]
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(256)
+  email     String    @db.VarChar(256)
+  password  String    @db.VarChar(256)
+  role      UserRole  @default(customer)
+  phone     String?   @db.VarChar(20)
+  createdAt DateTime  @default(now())
+  hotels    Hotel[]
+  bookings  Booking[]
+  reviews   Review[]
 }
 
 //hotel schema
@@ -26,6 +33,21 @@ model Hotel {
   rating       Float    @default(0.0)
   totalReviews Int      @default(0)
   createdAt    DateTime @default(now())
+  rooms        Room[]
+  reviews      Review[]
+}
+
+model Room {
+  id            String   @id @default(uuid())
+  hotelId       String
+  Hotel         Hotel    @relation(fields: [hotelId], references: [id])
+  roomNumber    String   @db.VarChar(50)
+  roomType      String   @db.VarChar(100)
+  pricePerNight Decimal  @db.Decimal(10, 2)
+  maxOccupancy  Int
+  createdAt     DateTime @default(now())
+
+  @@unique([hotelId, roomNumber]) // ensure hotelId and roomNUmber are not same
 }
 
 model Booking {
@@ -41,6 +63,27 @@ model Booking {
   status       BookingStatus @default(confirmed)
   bookingDate  DateTime      @default(now())
   cancelledAt  DateTime?
+  reviews      Review[]
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  User      User     @relation(fields: [userId], references: [id])
+  hotelId   String
+  Hotel     Hotel    @relation(fields: [hotelId], references: [id])
+  bookingId String
+  Booking   Booking  @relation(fields: [bookingId], references: [id])
+  rating    Int // rating >= 1 AND rating <= 5
+  comment   String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, bookingId])
+}
+
+enum UserRole {
+  customer
+  owner
 }
 
 enum BookingStatus {
