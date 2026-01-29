@@ -22,30 +22,32 @@ model User {
 
 //hotel schema
 model Hotel {
-  id           String   @id @default(uuid())
+  id           String    @id @default(uuid())
   ownerId      String
-  Owner        User     @relation(references: [id], fields: [ownerId])
+  Owner        User      @relation(references: [id], fields: [ownerId])
   name         String
   description  String?
   city         String
   country      String
-  amenities    Json     @default("[]")
-  rating       Float    @default(0.0)
-  totalReviews Int      @default(0)
-  createdAt    DateTime @default(now())
+  amenities    Json      @default("[]")
+  rating       Float     @default(0.0)
+  totalReviews Int       @default(0)
+  createdAt    DateTime  @default(now())
   rooms        Room[]
   reviews      Review[]
+  bookings     Booking[]
 }
 
 model Room {
-  id            String   @id @default(uuid())
+  id            String    @id @default(uuid())
   hotelId       String
-  Hotel         Hotel    @relation(fields: [hotelId], references: [id])
-  roomNumber    String   @db.VarChar(50)
-  roomType      String   @db.VarChar(100)
-  pricePerNight Decimal  @db.Decimal(10, 2)
+  Hotel         Hotel     @relation(fields: [hotelId], references: [id])
+  roomNumber    String    @db.VarChar(50)
+  roomType      String    @db.VarChar(100)
+  pricePerNight Decimal   @db.Decimal(10, 2)
   maxOccupancy  Int
-  createdAt     DateTime @default(now())
+  createdAt     DateTime  @default(now())
+  bookings      Booking[]
 
   @@unique([hotelId, roomNumber]) // ensure hotel has each roomNumber unique
 }
@@ -55,7 +57,9 @@ model Booking {
   userId       String
   User         User          @relation(fields: [userId], references: [id])
   roomId       String
+  Room         Room          @relation(fields: [roomId], references: [id])
   hotelId      String
+  Hotel        Hotel         @relation(fields: [hotelId], references: [id])
   checkInDate  DateTime      @default(now())
   checkOutDate DateTime      @default(now())
   guests       Int
