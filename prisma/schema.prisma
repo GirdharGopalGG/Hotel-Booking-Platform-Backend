@@ -47,7 +47,7 @@ model Room {
   maxOccupancy  Int
   createdAt     DateTime @default(now())
 
-  @@unique([hotelId, roomNumber]) // ensure hotelId and roomNUmber are not same
+  @@unique([hotelId, roomNumber]) // ensure hotel has each roomNumber unique
 }
 
 model Booking {

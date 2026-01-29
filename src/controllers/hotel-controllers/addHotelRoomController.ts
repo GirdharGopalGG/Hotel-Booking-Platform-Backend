@@ -6,11 +6,12 @@ import {
   addHotelRoomSchema,
 } from "../../validations/addHotelRoom.validation.js";
 import { prisma } from "../../lib/prisma.js";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 async function addHotelRoomController(req: Request, res: Response) {
   // check user role is owner or not
   if (req.user.role !== "owner") {
-    res.status(401).json(errorResponse(ERROR_CODES.UNAUTHORIZED));
+    res.status(403).json(errorResponse(ERROR_CODES.FORBIDDEN));
     return;
   }
 
@@ -42,11 +43,6 @@ async function addHotelRoomController(req: Request, res: Response) {
       select: {
         id: true,
         ownerId: true,
-        rooms: {
-          where: {
-            roomNumber,
-          },
-        },
       },
     });
     if (!hotelRecord) {
@@ -55,15 +51,9 @@ async function addHotelRoomController(req: Request, res: Response) {
     }
 
     // check is hotel owned by user
-    const isHotelOwnedByUser = hotelRecord.ownerId !== req.user.id;
+    const isHotelOwnedByUser = hotelRecord.ownerId === req.user.id;
     if (!isHotelOwnedByUser) {
       res.status(403).json(errorResponse(ERROR_CODES.FORBIDDEN));
-      return;
-    }
-
-    // check roomNumber already exist or not
-    if (hotelRecord.rooms.length > 0) {
-      res.status(400).json(errorResponse(ERROR_CODES.ROOM_ALREADY_EXISTS));
       return;
     }
 
@@ -84,11 +74,19 @@ async function addHotelRoomController(req: Request, res: Response) {
         hotelId: roomRecord.hotelId,
         roomNumber: roomRecord.roomNumber,
         roomType: roomRecord.roomType,
-        pricePerNight: roomRecord.pricePerNight,
+        pricePerNight: roomRecord.pricePerNight.toNumber(),
         maxOccupancy: roomRecord.maxOccupancy,
       }),
     );
   } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        console.log("prisma duplicate error ", error);
+        res.status(400).json(errorResponse(ERROR_CODES.ROOM_ALREADY_EXISTS));
+        return;
+      }
+    }
+
     console.error("Error while adding room to hotel \n", error);
     return res
       .status(500)
