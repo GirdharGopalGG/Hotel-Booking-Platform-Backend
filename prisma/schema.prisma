@@ -10,7 +10,7 @@ datasource db {
 model User {
   id        String    @id @default(uuid())
   name      String    @db.VarChar(256)
-  email     String    @db.VarChar(256)
+  email     String    @unique @db.VarChar(256)
   password  String    @db.VarChar(256)
   role      UserRole  @default(customer)
   phone     String?   @db.VarChar(20)
