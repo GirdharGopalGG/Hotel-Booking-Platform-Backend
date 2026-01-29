@@ -1,5 +1,4 @@
-import type { $Enums } from "./src/generated/prisma/index.js";
-import type { UserRole } from "./src/validations/userZodSchema";
+import type { UserRole } from "./src/generated/prisma/client.ts";
 
 declare global {
   declare namespace Express {
@@ -7,7 +6,7 @@ declare global {
       user: {
         id: string;
         email: string;
-        role: $Enums.UserRole;
+        role: UserRole;
       };
     }
   }

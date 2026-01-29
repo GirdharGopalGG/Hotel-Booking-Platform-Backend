@@ -2,7 +2,6 @@ import type { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/responses.js";
 import { ERROR_CODES } from "../../utils/constants.js";
 import { prisma } from "../../lib/prisma.js";
-import type { $Enums } from "../../generated/prisma/index.js";
 
 async function getBookingDetailsController(req: Request, res: Response) {
   const bookingStatus = req.query.status;
@@ -112,3 +111,5 @@ async function getBookingDetailsController(req: Request, res: Response) {
       .json(errorResponse(ERROR_CODES.INTERNAL_SERVER_ERROR));
   }
 }
+
+export { getBookingDetailsController };

@@ -1,11 +1,7 @@
 import jwt from "jsonwebtoken";
-import type { $Enums } from "../generated/prisma/index.js";
+import type { UserRole } from "../generated/prisma/enums.js";
 
-function generateToken(data: {
-  id: string;
-  name: string;
-  role: $Enums.UserRole;
-}) {
+function generateToken(data: { id: string; name: string; role: UserRole }) {
   const JWT_SECRET = process.env.JWT_SECRET!;
   const token = jwt.sign(data, JWT_SECRET);
 
