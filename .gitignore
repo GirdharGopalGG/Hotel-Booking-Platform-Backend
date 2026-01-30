@@ -4,5 +4,7 @@ node_modules
 
 dist 
 
+tsconfig.tsbuildinfo
+
 /src/generated/prisma
 
