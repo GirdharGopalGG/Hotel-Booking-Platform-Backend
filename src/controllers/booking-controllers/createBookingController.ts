@@ -40,6 +40,9 @@ export const createBookingController = async (req: Request, res: Response) => {
     const bookings = await prisma.booking.findMany({
       where: {
         roomId,
+        status:{
+          notIn:['cancelled']
+        }
       },
       select: {
         checkInDate: true,
