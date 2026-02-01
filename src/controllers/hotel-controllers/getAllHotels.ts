@@ -27,20 +27,23 @@ export const getAllHotels = async (req: Request, res: Response) => {
       };
     }
 
-    const roomPriceFilter: Prisma.RoomWhereInput = {};
     if (minPrice || maxPrice) {
+      const roomPriceFilter: Prisma.RoomWhereInput = {};
+      
       roomPriceFilter.pricePerNight = {};
+
       if (minPrice) {
-        roomPriceFilter.pricePerNight.gte = parseInt(minPrice as string);
+        roomPriceFilter.pricePerNight.gte = parseFloat(minPrice as string);
       }
+
       if (maxPrice) {
-        roomPriceFilter.pricePerNight.lte = parseInt(maxPrice as string);
+        roomPriceFilter.pricePerNight.lte = parseFloat(maxPrice as string);
       }
-    }
-    if (minPrice || maxPrice) {
+
       hotelFilter.rooms = {
         some: roomPriceFilter,
       };
+
     }
 
     const hotels = await prisma.hotel.findMany({
@@ -71,7 +74,7 @@ export const getAllHotels = async (req: Request, res: Response) => {
         return Number(room.pricePerNight);
       });
 
-      const minPricePerNight = Number(Math.min(...roomPrices));
+      const minPricePerNight = Number(...roomPrices);
 
       const { rooms, ...hotelData } = hotel;
 

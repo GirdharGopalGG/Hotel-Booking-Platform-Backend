@@ -22,13 +22,7 @@ export const createBookingController = async (req: Request, res: Response) => {
       return res.status(404).json(errorResponse(ERROR_CODES.ROOM_NOT_FOUND));
     }
 
-    // const hotel = await prisma.hotel.findFirst({
-    //   where: {
-    //     id: room.hotelId,
-    //   },
-    // });
     const isOwner = req.user.role === "owner";
-    // const isOwnerSame = hotel?.ownerId === req.user.id;
     if (isOwner) {
       return res.status(403).json(errorResponse(ERROR_CODES.FORBIDDEN));
     }

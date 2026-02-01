@@ -10,7 +10,6 @@ import { getAllHotels } from "../controllers/hotel-controllers/getAllHotels.js";
 import { createBookingController } from "../controllers/booking-controllers/createBookingController.js";
 import { cancelBookingController } from "../controllers/booking-controllers/cancelBookingController.js";
 import { getBookingDetailsController } from "../controllers/booking-controllers/getBookingDetailsController.js";
-// import { getAllBookingsController } from "../controllers/hotel-controllers/getAllBookingsController.js";
 
 const router = express.Router();
 
