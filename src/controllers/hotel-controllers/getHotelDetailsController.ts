@@ -4,9 +4,7 @@ import { ERROR_CODES } from "../../utils/constants.js";
 import { prisma } from "../../lib/prisma.js";
 
 async function getHotelDetailsController(req: Request, res: Response) {
-  
-
-  const hotelId  = req.params.hotelId as string
+  const hotelId = req.params.hotelId as string;
 
   try {
     // check hotel exist or not
